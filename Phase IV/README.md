@@ -3,7 +3,7 @@
 ## Student Information
 - **Group**: Thursday
 - **Student ID**: 27328  
-- **Name**: Irene
+- **Name**: Igiraneza Irene
 - **Project**: Emergency Response and bed availability Tracker System
 - **Phase**: IV - Database Creation
 
