@@ -1,167 +1,229 @@
-📘 Phase VII – Advanced Programming & Auditing
-Project: Emergency Response and Bed Availability Tracker
+🚨 Phase VII – Advanced Programming & Auditing
 
-Student Name: Igiraneza Irene
+Emergency Response and Bed Availability Tracker
+
+👩‍🎓 Student Information
+
+Name: Igiraneza Irene
+
 Student ID: 27328
-Database: Oracle 21c XE
+
+Database: Oracle 21c Express Edition (XE)
+
 Schema: PDB_ADMIN
 
-📌 Phase Objective
+📌 Phase Overview
 
-The objective of Phase VII is to implement advanced PL/SQL programming concepts, including:
+Phase VII focuses on advanced PL/SQL programming and auditing mechanisms to enforce strict business rules within the Emergency Response and Bed Availability Tracker system.
 
-Business rule enforcement using triggers
+This phase introduces time-based transaction control, comprehensive audit logging, and trigger-driven enforcement to ensure data integrity, security, and accountability in a real-world hospital environment.
 
-Restriction of database operations based on time rules
+🎯 Objective
 
-Comprehensive auditing of all user actions
+The main objectives of this phase are to:
 
-Use of simple triggers, compound triggers, functions, and procedures
+Enforce critical business rules using PL/SQL triggers
 
-Clear testing and validation of all rules
+Restrict database modifications based on time conditions
 
-This phase ensures the system enforces real-world operational policies while maintaining accountability.
+Log all user actions (allowed and denied)
 
-🚨 Critical Business Rule Implemented
+Demonstrate advanced PL/SQL concepts such as:
 
-Employees CANNOT INSERT, UPDATE, or DELETE records when:
+Simple triggers
 
-It is a weekday (Monday–Friday)
+Compound triggers
 
-It is a public holiday (on the holiday date)
+Boolean logic
 
-✅ Allowed:
+Custom exceptions
 
-Weekends (Saturday & Sunday)
+Auditing procedures
 
-❌ Denied:
+🚫 Critical Business Rule (Mandatory Requirement)
 
-Weekdays
+Employees are NOT allowed to INSERT, UPDATE, or DELETE records when:
 
-Public holidays
+The current day is a weekday (Monday–Friday)
 
-All allowed and denied attempts are logged.
+The current day is a public holiday
 
-🧩 Components Implemented
-1️⃣ Holiday Management
+✅ Allowed Operations
+
+Transactions performed on weekends (Saturday and Sunday)
+
+❌ Blocked Operations
+
+All data modification operations on weekdays
+
+All data modification operations on public holidays
+
+Every attempt—successful or blocked—is recorded in the audit log.
+
+🧩 System Components Implemented
+1️⃣ Public Holiday Management
 
 Table: PUBLIC_HOLIDAYS
-Stores official public holidays used to enforce transaction restrictions.
 
-public_holidays(holiday_date, description)
+Stores official public holidays used to determine restricted transaction days.
 
-2️⃣ Audit Log
+Purpose:
+
+Enables dynamic holiday management
+
+Supports business rule enforcement without code changes
+
+2️⃣ Audit Logging System
 
 Table: AUDIT_LOG
-Captures all database modification attempts.
 
-Logged details:
+Captures detailed information about every database modification attempt.
 
-Username
+Logged Information:
 
-Action type (INSERT / UPDATE / DELETE)
+Database username
 
-Table name
+Operation type (INSERT, UPDATE, DELETE)
 
-Status (ALLOWED / DENIED)
+Affected table name
 
-Message
+Operation status (ALLOWED / DENIED)
 
-Timestamp
+Descriptive message
 
-3️⃣ Audit Logging Procedure
+Timestamp of the action
+
+This ensures full traceability and accountability.
+
+3️⃣ Centralized Audit Procedure
 
 Procedure: LOG_AUDIT
-Centralized procedure used by triggers to record all actions consistently.
 
-4️⃣ Restriction Logic
+A reusable PL/SQL procedure that records audit entries from all triggers, ensuring:
 
-Function: IS_RESTRICTED_DAY
+Consistent logging
+
+Reduced code duplication
+
+Easier maintenance
+
+4️⃣ Restriction Logic Functions
+🔹 IS_RESTRICTED_DAY
 
 Returns BOOLEAN
 
 Used internally by triggers
 
-Enforces weekday and holiday restrictions
+Determines whether a transaction should be blocked based on:
 
-Wrapper Function: IS_RESTRICTED_DAY_SQL
+Day of the week
 
-Returns NUMBER
+Public holiday check
 
-Enables SQL-based testing (SELECT)
+🔹 IS_RESTRICTED_DAY_SQL
 
-Used for validation and reporting
+Returns NUMBER (1 = Restricted, 0 = Allowed)
+
+Created specifically for SQL-based testing
+
+Allows validation without altering server system dates
+
+This dual-function approach demonstrates advanced PL/SQL design.
 
 5️⃣ Simple Trigger
 
 Trigger: TRG_RESTRICT_ADMISSIONS
 
-Enforces business rules on the ADMISSIONS table
+Applied to the ADMISSIONS table
 
-Blocks invalid operations
+Executes before INSERT, UPDATE, or DELETE
 
-Logs both allowed and denied attempts
+Enforces restriction rules
+
+Logs every attempt
+
+Raises clear, user-friendly error messages
 
 6️⃣ Compound Trigger
 
 Trigger: TRG_COMPOUND_AUDIT
 
-Implemented on the PATIENTS table
+Applied to the PATIENTS table
 
 Uses compound trigger structure
 
-Enforces restriction rules at row level
+Performs row-level restriction checks
 
-Logs detailed audit records
+Ensures centralized auditing and rule enforcement
+
+Demonstrates advanced trigger programming
 
 🧪 Testing & Validation
-✔ Test Scenarios Covered
 
-Test Case	Expected Result	Status
-Insert on weekday	DENIED	✅
-Insert on weekend	ALLOWED	✅
-Insert on public holiday	DENIED	✅
-Audit logging	Recorded	✅
-Error messaging	Clear & user-friendly	✅
+✔ Test Scenarios Executed
+
+Test Case	Expected Outcome	Result
+
+Insert on weekday	Blocked	✅
+
+Insert on weekend	Allowed	✅
+
+Insert on public holiday	Blocked	✅
+
+Audit record creation	Logged	✅
+
+Error message clarity	Clear & descriptive	✅
+
 🔍 Sample Error Message
+
 ORA-20011: Transaction blocked due to business rule
 
 
-This confirms correct enforcement of restrictions.
+This confirms that restrictions are correctly enforced.
 
 🔎 Audit Verification Query
+
 SELECT username, action_type, table_name, status, message, action_date
 FROM audit_log
 ORDER BY action_date DESC;
 
 
-Confirms:
+Result confirms:
 
-User identity captured
+Correct user identification
 
-Both ALLOWED and DENIED actions logged
+Accurate action tracking
 
-Accurate timestamps
+Both ALLOWED and DENIED attempts recorded
 
-🛡️ Key Concepts Demonstrated
+Reliable timestamps
 
-Business rule enforcement
+🛡️ Advanced Concepts Demonstrated
 
-Simple & compound triggers
+Time-based business rule enforcement
 
-PL/SQL Boolean logic
-
-SQL-compatible wrapper functions
+Simple and compound triggers
 
 Custom exceptions
 
-Centralized auditing
+Boolean logic in PL/SQL
+
+SQL-compatible testing functions
+
+Centralized audit logging
 
 Secure transaction control
 
 🏁 Conclusion
 
-Phase VII successfully implements enterprise-level control and auditing within the Emergency Response and Bed Availability Tracker.
-The system ensures operational safety, compliance with hospital policies, and full traceability of user actions.
+Phase VII successfully implements enterprise-level control and auditing mechanisms for the Emergency Response and Bed Availability Tracker.
 
-This phase completes the project’s advanced PL/SQL requirements and demonstrates real-world database governance.
+The system ensures:
+
+Strict enforcement of hospital operational policies
+
+Prevention of unauthorized data manipulation
+
+Full visibility and accountability of user actions
+
+This phase completes the project’s advanced PL/SQL requirements and reflects real-world database governance practices.
